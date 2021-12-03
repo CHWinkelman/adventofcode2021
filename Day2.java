@@ -7,6 +7,7 @@ class Day2 {
 		
 		int x = 0;	//up or down
 		int y = 0;	//forward direction
+
 		int x2 = 0;     //part two variables
 		int y2 = 0;
 		int aim = 0;
