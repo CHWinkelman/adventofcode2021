@@ -74,9 +74,11 @@ class Day3 {
 		
 	public static void main(String[] args) {
 		System.out.print("Part one: ");
+		
 		ArrayList<Integer> report = new ArrayList<Integer>();
-		int[] frequency = new int[12];
-		int gamma, epsilon, bitLength;
+		int gamma, epsilon;
+		int bitLength = 12;
+		int[] frequency = new int[bitLength];
 		try {
 			// File file = new File("day3testinput.txt");
 			File file = new File("day3input.txt");
@@ -89,29 +91,21 @@ class Day3 {
 		catch (FileNotFoundException e) {
 			System.out.println(e);
 		}
-		System.out.println(report);
 
 		for (int i = 0; i < report.size(); i++) {
 			frequency = count(report.get(i), frequency);
 		}
 		
-		gamma = countArrayToBinary(frequency, report.size());
-		System.out.println(gamma);
-		System.out.println(Integer.toBinaryString(gamma));
-		epsilon = ~(gamma) & 0xfff;
-		System.out.println(epsilon);
-		System.out.println(Integer.toBinaryString(epsilon));
+		gamma = countArrayToBinary(frequency, report);
+		epsilon = ~(gamma) & bitmask(12);
 		System.out.println(gamma*epsilon);
 
-		//Rough sketch: put values into arrays, iterate through Arrays adding each column then check
-		//against Arraylist length divided by two, 1 if greater, 0 if lesser, adding this to gamma then
-		//left shift bit <<. Chop off to where they should be with & 0xff *shrug emoji*
 
 		System.out.println("Part two: ");
 		int oxy = eliminate(report, true);
 		System.out.println(oxy);
 		int carbon = eliminate(report, false);
 		System.out.println(carbon);
-		// System.out.println(oxy*carbon);
+		System.out.println(oxy*carbon);
 	}
 }
