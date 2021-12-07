@@ -4,31 +4,46 @@ import java.io.File;
 import java.util.ArrayList;
 
 class Day3 {
+	static int bitmask(int position){
+		return Math.pow(2, position);
+	}
+	
+	static int flip(int bit) {
+		if (bit == 0){
+			return 1;
+		} else {
+			return 1;
+		}
+	}
+	
+	static int getBit(int binary, int position) {   //position starts at 0, being least significant bit
+	if (binary & bitmask(position) != 0) {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+	
 	static int[] count(int binary, int[] temp_freq) {
-		for (int i = temp_freq.length - 1; i >= 0; i--) { 
-			temp_freq[i] += binary % 2; //modulo returns last bit
-			binary = binary >> 1;
-			System.out.println(Integer.toBinaryString(binary)); //debug diagnostic but its pretty so it stays
+		for (int i = 0; i < temp_freq.length; i++) { 
+			temp_freq[i] += getBit(binary, i)
 		}
 		return temp_freq;
 	}
 
-	static int countArrayToBinary(int[] temp_freq, int length) {  //make sure to pass arraylist length when ran
+	static int countArrayToBinary(int[] temp_freq) {
 		int bin = 0;
-
 		for (int i = 0; i < temp_freq.length; i++) { 
 			bin = bin << 1;
 			bin += (temp_freq[i] * 2 > length) ? 1 : 0;
-			System.out.println(Integer.toBinaryString(bin)); //debug diagnostic but its pretty so it stays
 		}
-
 		return bin;
 	}
-	static int mostCommon(ArrayList data, int position) {		// 6|5|4|3|2|1
-		int count = 0;						// 0|0|0|0|0|0
-		int temp = 0;  //might not be necessary but better safe than sorry
+	
+	static int mostCommon(ArrayList data, int position) {
+		int count = 0;
 		for (int i = 0; i < data.size(); i++) {
-			count += ((((int) data.get(i)) >> position) % 2);
+			count += getBit(data.get(i), position);
 		}
 		if (count * 2 > data.size()) {
 			return 1;
@@ -37,22 +52,18 @@ class Day3 {
 		}
 	}
 
-	static int getBit(int binary, int position) {
-		return binary >> position % 2;
-	}
-
-	static int eliminate(ArrayList data, boolean most) {
-		int length = 12;  //I'm sure theres a better way to do this but *shrug emoji* 
-		for (int i = 0; i < length; i++) {		//iterate through bit position, 
-			// int bit = mostCommon(data, length - i);
-			int bit = (most) ? (mostCommon(data, length - i) & 0x1) : ~(mostCommon(data, length - i)) & 0x1;
-			System.out.println("Position : " + i + " Bit : " + bit);
-			for (int x = 0; x < data.size(); x++) {
+	static int eliminate(ArrayList data, boolean most, int length) {
+		for (int i = 1; i <= length; i++) {		//iterate through bit position, 
+			int bit = (most) ? mostCommon(data, length - i) : flip(mostCommon(data, length - i));
+			System.out.println("Most : " + most + "Position : " + i + " Bit : " + bit);
+			
+			for (int x = data.size() - 1; x >= 0; x--) {  //iterating backward through the list stops it from skipping through haphazardly after deleting
 				if (data.size() == 1) {
-					System.out.println(data.get(x));
+					System.out.println("Winner : " + Integer.toBinaryString(data.get(x))) + " " + data.get(x);
 					return (int) data.get(x);
-				}else if ((getBit((int) data.get(x), i) & 0x1)!= bit) {
+				}else if ((getBit((int) data.get(x), i))!= bit) {
 					data.remove(x);
+			
 				}
 			}
 		}
@@ -65,8 +76,7 @@ class Day3 {
 		System.out.print("Part one: ");
 		ArrayList<Integer> report = new ArrayList<Integer>();
 		int[] frequency = new int[12];
-		int gamma, epsilon;
-
+		int gamma, epsilon, bitLength;
 		try {
 			// File file = new File("day3testinput.txt");
 			File file = new File("day3input.txt");
